@@ -24,4 +24,16 @@ contract Payout {
 
         customToken.transferFrom(msg.sender, _recipient, amount);
     }
+
+    function payoutFromContract(
+        address _tokenAddress,
+        address _recipient,
+        uint256 amount
+    ) external {
+        IERC20 customToken = IERC20(_tokenAddress);
+
+        require(amount > 0, "Amount is invalid");
+
+        customToken.transfer(_recipient, amount);
+    }
 }
