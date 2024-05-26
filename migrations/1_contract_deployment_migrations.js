@@ -1,8 +1,8 @@
-const Payout = artifacts.require("Payout");
 const Token = artifacts.require("TodoToken")
+const TodoList = artifacts.require("TodoList")
 
 module.exports = async (deployer) => {
-    	await deployer.deploy(Payout);
-	const payout = await Payout.deployed()
-	await deployer.deploy(Token, payout.address, "TodoToken", "TT", 1000000);
+   	await deployer.deploy(TodoList);
+	const todoList = await TodoList.deployed()
+	await deployer.deploy(Token, todoList.address, "TodoToken", "TT", 1000000);
 };
