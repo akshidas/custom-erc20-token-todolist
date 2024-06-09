@@ -1,10 +1,21 @@
 // SPDX-License-Identifier: MIT
 pragma solidity >=0.4.22 <0.9.0;
 
+interface IERC20 {
+    function transfer(address to, uint256 amount) external returns (bool);
+    function transferFrom(
+        address sender,
+        address recipient,
+        uint256 amount
+    ) external returns (bool);
+    function balanceOf(address account) external view returns (uint256);
+}
+
 contract TodoList {
     uint public taskCount = 0;
     uint[] private availableTaskIds;
     mapping(uint => Task) public tasks;
+    IERC20 public token;
 
     struct Task {
         uint id;
@@ -17,8 +28,13 @@ contract TodoList {
     event Toggled(uint id, string content, bool completed);
     event Removed(uint id, string message);
 
-    constructor() public {
-        addTask("Deploy the Smart Contract");
+    constructor(address _token) {
+    	token = IERC20(_token);
+    	addTask("Deploy the Smart Contract");
+    }
+
+    function getCurrentTokenHolding() public view returns(uint256) {
+    	return token.balanceOf(address(this));
     }
 
     function addTask(string memory _content) public {
