@@ -8,4 +8,5 @@ interface ITodoList {
 	function removeTask(uint) external;
 	function markComplete(uint) external;
 	function getTaskIds() external view returns(uint[] memory);
+	function setToken(address) external;
 }

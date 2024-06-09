@@ -5,7 +5,8 @@ import "../interfaces/IERC20.sol";
 import "../interfaces/ITodoList.sol";
 
 contract TodoList is ITodoList {
-    uint public taskCount = 0;
+	address private owner;
+	uint public taskCount = 0;
     uint[] private availableTaskIds;
     mapping(uint => Task) public tasks;
     IERC20 private token;
@@ -14,16 +15,22 @@ contract TodoList is ITodoList {
         uint id;
         string content;
         bool completed;
+        address owner;
     }
 
     event TaskAdded(string message);
     event Toggling(uint id, string content, bool completed);
     event Toggled(uint id, string content, bool completed);
     event Removed(uint id, string message);
+    event TokenTransferred(string message, address user);
 
-    constructor(address _token) {
+    constructor() {
+    	owner = msg.sender;
+    }
+
+    function setToken(address _token) public  {
+    	require(msg.sender == owner, "Get lost, I have nothing to do with you!!!");
     	token = IERC20(_token);
-    	addTask("Deploy the Smart Contract");
     }
 
     function getCurrentTokenHolding() public view returns(uint256) {
@@ -32,9 +39,11 @@ contract TodoList is ITodoList {
 
     function addTask(string memory _content) public {
         taskCount++;
-        tasks[taskCount] = Task(taskCount, _content, false);
+        tasks[taskCount] = Task(taskCount, _content, false, msg.sender);
         availableTaskIds.push(taskCount);
         emit TaskAdded("A New Task has been added");
+        token.transfer(msg.sender, 10);
+        emit TokenTransferred("10 TT transfered", msg.sender);
     }
 
     function removeTask(uint _id) public {
