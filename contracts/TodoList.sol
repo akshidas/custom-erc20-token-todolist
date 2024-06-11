@@ -9,7 +9,10 @@ contract TodoList is ITodoList {
 	uint public taskCount = 0;
     uint[] private availableTaskIds;
     mapping(uint => Task) public tasks;
+    mapping(address => uint[]) public users;
+    
     IERC20 private token;
+    uint8 private constant AMOUNT_FOR_NEW_USER  =  100;
 
     struct Task {
         uint id;
@@ -22,7 +25,7 @@ contract TodoList is ITodoList {
     event Toggling(uint id, string content, bool completed);
     event Toggled(uint id, string content, bool completed);
     event Removed(uint id, string message);
-    event TokenTransferred(string message, address user);
+    event TokenTransferred(uint8 amount, string message, address user);
 
     constructor() {
     	owner = msg.sender;
@@ -42,8 +45,8 @@ contract TodoList is ITodoList {
         tasks[taskCount] = Task(taskCount, _content, false, msg.sender);
         availableTaskIds.push(taskCount);
         emit TaskAdded("A New Task has been added");
-        token.transfer(msg.sender, 10);
-        emit TokenTransferred("10 TT transfered", msg.sender);
+        token.transfer(msg.sender, AMOUNT_FOR_NEW_USER);
+        emit TokenTransferred(AMOUNT_FOR_NEW_USER,"TT transfered", msg.sender);
     }
 
     function removeTask(uint _id) public {

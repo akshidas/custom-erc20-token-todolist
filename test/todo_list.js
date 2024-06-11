@@ -22,6 +22,6 @@ contract("TodoList", async function([primary]) {
   it("Ten Tokens transferred to the task creator", async function() {
     const token = await Token.deployed()
     const balance = await token.balanceOf(primary)
-    assert.strictEqual(balance.toString(), '10', "Transferred Amount is not correct")
+    assert.strictEqual(balance.toString(), '100', "Transferred Amount is not correct")
   })
 });
