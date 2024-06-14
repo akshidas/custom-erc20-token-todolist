@@ -3,26 +3,30 @@ pragma solidity >=0.4.22 <0.9.0;
 
 import "../interfaces/IERC20.sol";
 import "../interfaces/ITodoList.sol";
+import "truffle/Console.sol";
 
 contract TodoList is ITodoList {
 	address private owner;
 	uint public taskCount = 0;
     uint[] private availableTaskIds;
     mapping(uint => Task) public tasks;
-    IERC20 private token;
+    mapping(address => Task[]) private users;
 
+    IERC20 private token;
+    uint private constant AMOUNT_FOR_NEW_USER  =  100;
+    uint private constant AMOUNT_FOR_NEW_TASK = 10;
     struct Task {
         uint id;
         string content;
         bool completed;
-        address owner;
     }
 
     event TaskAdded(string message);
     event Toggling(uint id, string content, bool completed);
     event Toggled(uint id, string content, bool completed);
     event Removed(uint id, string message);
-    event TokenTransferred(string message, address user);
+    event TokenTransferred(uint amount, string message, address user);
+    event UserAdded(address userAddress, string message);
 
     constructor() {
     	owner = msg.sender;
@@ -37,17 +41,51 @@ contract TodoList is ITodoList {
     	return token.balanceOf(address(this));
     }
 
-    function addTask(string memory _content) public {
-        taskCount++;
-        tasks[taskCount] = Task(taskCount, _content, false, msg.sender);
-        availableTaskIds.push(taskCount);
-        emit TaskAdded("A New Task has been added");
-        token.transfer(msg.sender, 10);
-        emit TokenTransferred("10 TT transfered", msg.sender);
+
+    function connectUser() public returns(bool) {
+     	users[msg.sender];
+    	emit UserAdded(msg.sender, "User Added");
+     	token.transfer(msg.sender,AMOUNT_FOR_NEW_USER);
+      	emit TokenTransferred(AMOUNT_FOR_NEW_USER,"TT transfered", msg.sender);
+       	return true;
     }
 
-    function removeTask(uint _id) public {
-        if (taskExists(_id)) {
+    function getTaskLength() public view returns(uint) {
+    	/*Task[] memory _tasks = users[msg.sender];*/
+
+   		/*uint length = users[msg.sender].length;*/
+
+    	return users[msg.sender].length;
+    }
+
+    function addTask(string memory _content) public {
+   		bool status  = token.transferFrom(msg.sender, address(this), AMOUNT_FOR_NEW_TASK);
+     	require(status == true, "Failed to deposit Tokens");
+
+    	uint myTasks = getTaskLength();
+    	Task memory task = Task(myTasks + 1, _content, false);
+     	users[msg.sender].push(task);
+      	emit TaskAdded("A New Task has been added");
+    }
+
+    function getTask(uint index) public view returns(Task memory){
+    	Task[] memory  myTasks = users[msg.sender];
+     	uint _taskCount = getTaskLength();
+      	require(index < _taskCount, 'Task with the specified index does not exist');
+     	return myTasks[index];
+    }
+/*
+    function
+    removeTask(uint index) public {
+    	Task[] storage _tasks = users[msg.sender];
+     	require(index < _tasks.length, "Index Overshot");
+
+      	for(uint i = index; i < _tasks.length; i++) {
+     		_tasks[i] = _tasks[i+1];
+       	}
+        /*_tasks.pop();*/
+
+    /*if (taskExists(_id)) {
             delete tasks[_id];
             for (uint i = 0; i < availableTaskIds.length; i++) {
                 if (availableTaskIds[i] == _id) {
@@ -57,15 +95,23 @@ contract TodoList is ITodoList {
             }
             emit Removed(_id, "Task removed");
         }
-    }
+        */
 
-    function markComplete(uint _id) public {
-        if (taskExists(_id)) {
+    function markComplete(uint index) public {
+    Task[] storage _tasks = users[msg.sender];
+   	require(index < _tasks.length, "Index Overshot");
+
+    Task storage task = _tasks[index];
+    emit Toggling(task.id, task.content, task.completed);
+    task.completed = !task.completed;
+    emit Toggled(task.id, task.content, task.completed);
+
+    /*if (taskExists(_id)) {
             Task storage task = tasks[_id];
             emit Toggling(task.id, task.content, task.completed);
             task.completed = !task.completed;
             emit Toggled(task.id, task.content, task.completed);
-        }
+        }*/
     }
 
     function taskExists(uint _id) private view returns (bool) {
