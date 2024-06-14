@@ -19,6 +19,8 @@ contract TodoList is ITodoList {
         uint id;
         string content;
         bool completed;
+        uint256 startTime;
+        uint256 endTime;
     }
 
     event TaskAdded(string message);
@@ -58,12 +60,12 @@ contract TodoList is ITodoList {
     	return users[msg.sender].length;
     }
 
-    function addTask(string memory _content) public {
+    function addTask(string memory _content, uint256 endTime) public {
    		bool status  = token.transferFrom(msg.sender, address(this), AMOUNT_FOR_NEW_TASK);
      	require(status == true, "Failed to deposit Tokens");
 
     	uint myTasks = getTaskLength();
-    	Task memory task = Task(myTasks + 1, _content, false);
+    	Task memory task = Task(myTasks + 1, _content, false, block.timestamp, endTime);
      	users[msg.sender].push(task);
       	emit TaskAdded("A New Task has been added");
     }

@@ -28,8 +28,9 @@ contract("TodoList", async function([primary]) {
     const token = await Token.deployed()
 
     await token.approve(todo.address, 10);
+    var date = new Date("07/14/2024 16:00:00"); // some mock date
 
-    await todoList.addTask('This is my first Task');
+    await todoList.addTask('This is my first Task', date.getTime() / 1000);
     const taskLength = await todoList.getTaskLength()
     assert.strictEqual(taskLength.toString(), '1', "Task length should be one but do not match");
   })
