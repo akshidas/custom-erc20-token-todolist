@@ -1,4 +1,4 @@
-import { BrowserProvider, Contract, InterfaceAbi } from "ethers";
+import { BrowserProvider, Contract, InterfaceAbi, JsonRpcSigner } from "ethers";
 
 declare global {
     interface Window {
@@ -6,9 +6,10 @@ declare global {
     }
 }
 
-const getEthereumProvider = async (): Promise<BrowserProvider> => {
+const getSigner = async (): Promise<JsonRpcSigner> => {
     if (window.ethereum) {
-        return new BrowserProvider(window.ethereum);
+        const ethereumProvider = new BrowserProvider(window.ethereum);
+        return await ethereumProvider.getSigner();
     }
     throw new Error("Failed to detect provider");
 };
@@ -17,8 +18,7 @@ const connectToContract = async (
     CONTRACT_ID: string,
     abi: InterfaceAbi
 ): Promise<Contract> => {
-    const ethereumProvider = await getEthereumProvider();
-    const signer = await ethereumProvider.getSigner();
+    const signer = await getSigner();
     return new Contract(CONTRACT_ID, abi, signer);
 };
 
