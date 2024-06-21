@@ -1,7 +1,10 @@
-import { BrowserProvider, Contract } from "ethers";
-import abi from "./abi.json";
+import { BrowserProvider, Contract, InterfaceAbi } from "ethers";
 
-const CONTRACT_ID = "0x260be31948A53E67C1eAb3C77A565C08786Cf59c";
+declare global {
+    interface Window {
+        ethereum?: any;
+    }
+}
 
 const getEthereumProvider = async (): Promise<BrowserProvider> => {
     if (window.ethereum) {
@@ -10,7 +13,10 @@ const getEthereumProvider = async (): Promise<BrowserProvider> => {
     throw new Error("Failed to detect provider");
 };
 
-const connectToContract = async (): Promise<Contract> => {
+const connectToContract = async (
+    CONTRACT_ID: string,
+    abi: InterfaceAbi
+): Promise<Contract> => {
     const ethereumProvider = await getEthereumProvider();
     const signer = await ethereumProvider.getSigner();
     return new Contract(CONTRACT_ID, abi, signer);

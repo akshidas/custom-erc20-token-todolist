@@ -7,16 +7,13 @@ import {
     useEffect,
     useState,
 } from "react";
-import connectToContract from "./connect-to-contract";
-
-declare global {
-    interface Window {
-        ethereum?: any;
-    }
-}
+import connectToContract from "utils/connect-to-contract";
+import abi from "./abi.json";
 
 export const todoContractContext = createContext<null | Contract>(null);
 export const useTodoList = () => useContext(todoContractContext);
+
+const CONTRACT_ID = "0x260be31948A53E67C1eAb3C77A565C08786Cf59c";
 
 const TodoProvider: FunctionComponent<{ children: ReactNode }> = ({
     children,
@@ -24,7 +21,7 @@ const TodoProvider: FunctionComponent<{ children: ReactNode }> = ({
     const [todoContract, setTodoContract] = useState<null | Contract>(null);
 
     useEffect(() => {
-        connectToContract()
+        connectToContract(CONTRACT_ID, abi)
             .then(async (todoContract) => {
                 setTodoContract(todoContract);
             })
