@@ -7,11 +7,15 @@ const theme = createTheme({
         },
     },
     components: {
+        MuiStack: {
+            defaultProps: {
+                spacing: "16px",
+            },
+        },
         MuiCard: {
             styleOverrides: {
                 root: {
                     padding: "16px",
-                
                 },
             },
             defaultProps: {
