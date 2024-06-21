@@ -1,3 +1,4 @@
+import { TODO_TOKEN_CONTRACT_ADDRESS } from "config";
 import { Contract } from "ethers";
 import {
     FunctionComponent,
@@ -13,8 +14,6 @@ import abi from "./abi.json";
 export const todoTokenContext = createContext<null | Contract>(null);
 export const useTodoToken = () => useContext(todoTokenContext);
 
-const CONTRACT_ID = "0xFb5322855b7950EB3e476BE0bd4b1D32B108fC15";
-
 const TodoTokenProvider: FunctionComponent<{ children: ReactNode }> = ({
     children,
 }) => {
@@ -23,7 +22,7 @@ const TodoTokenProvider: FunctionComponent<{ children: ReactNode }> = ({
     );
 
     useEffect(() => {
-        connectToContract(CONTRACT_ID, abi)
+        connectToContract(TODO_TOKEN_CONTRACT_ADDRESS, abi)
             .then(async (todoTokenContract) => {
                 setTodoTokenContract(todoTokenContract);
             })

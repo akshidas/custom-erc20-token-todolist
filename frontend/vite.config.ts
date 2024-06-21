@@ -9,6 +9,7 @@ export default defineConfig({
             theme: "/src/theme",
             store: "/src/store",
             components: "/src/components",
+            config: "/src/config/index.ts",
             utils: "/src/utils",
         },
     },
