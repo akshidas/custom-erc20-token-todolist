@@ -7,6 +7,7 @@ export default defineConfig({
     resolve: {
         alias: {
             theme: "/src/theme",
+            store: "/src/store",
         },
     },
 });
