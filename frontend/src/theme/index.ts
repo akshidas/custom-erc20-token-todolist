@@ -7,6 +7,17 @@ const theme = createTheme({
         },
     },
     components: {
+        MuiCard: {
+            styleOverrides: {
+                root: {
+                    padding: "16px",
+                
+                },
+            },
+            defaultProps: {
+                variant: "outlined",
+            },
+        },
         MuiButton: {
             defaultProps: {
                 onClick: (e) => e.stopPropagation(),
