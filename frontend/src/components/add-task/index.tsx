@@ -1,12 +1,8 @@
 import { Box, Button, Stack, TextField } from "@mui/material";
-import { FunctionComponent, useState } from "react";
+import { FunctionComponent } from "react";
 import { FormProvider, useForm } from "react-hook-form";
-import useAddTask from "./hooks/use-add-task";
 
 const AddTask: FunctionComponent = () => {
-    const [taskText, setTaskText] = useState("");
-    const addTask = useAddTask();
-
     const methods = useForm<Task>({
         defaultValues: {
             task: "",
