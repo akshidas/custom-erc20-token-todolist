@@ -1,4 +1,5 @@
 import { Card, Container, Stack, Typography } from "@mui/material";
+import AddTask from "components/add-task";
 import ConnectUser from "components/connect-user";
 import GetAddress from "components/get-address";
 import GetTaskLength from "components/get-task-length";
@@ -16,6 +17,7 @@ const App = () => {
                             <GetAddress />
                             <ConnectUser />
                             <GetTaskLength />
+                            <AddTask />
                         </Stack>
                     </Card>
                 </Container>
