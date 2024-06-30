@@ -13,6 +13,7 @@ contract TodoList {
     IERC20 private token;
     uint private constant AMOUNT_FOR_NEW_USER = 100;
     uint private constant AMOUNT_FOR_NEW_TASK = 10;
+
     struct Task {
         uint id;
         string content;
@@ -43,6 +44,14 @@ contract TodoList {
     function getCurrentTokenHolding() public view returns (uint256) {
         return token.balanceOf(address(this));
     }
+
+    function isUserConnected() public view returns (bool) {
+        Task[] memory myTasks = users[msg.sender];
+        if(myTasks.length > 0) {
+            return true;
+        }
+        return false;
+    } 
 
     function connectUser() public returns (bool) {
         users[msg.sender];

@@ -15,7 +15,13 @@ const useConnectUser = (): UseConnectUser => {
         setConnectionStatus("CONNECTING");
         try {
             if (todoListContract) {
-                await todoListContract.connectUser();
+                const isConnected = await todoListContract.isUserConnected();
+                if (isConnected) {
+                    setConnectionStatus("CONNECTED");
+                    return;
+                }
+                const connectingUser = await todoListContract.connectUser();
+                await connectingUser.wait()   ; 
                 setConnectionStatus("CONNECTED");
             }
         } catch (err) {
