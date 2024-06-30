@@ -43,7 +43,6 @@ const GetTasks: FunctionComponent<{}> = () => {
     getTask();
   }, [myTaskCount]);
 
-  console.log(tasks);
   return (
     <Box>
       <Typography variant="body1">My Tasks: {myTaskCount}</Typography>
