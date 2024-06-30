@@ -9,6 +9,7 @@ type Task = {
   startTime: number;
   endTime: number;
 };
+
 const GetTasks: FunctionComponent<{}> = () => {
   const [myTaskCount, setMyTaskCount] = useState(0);
   const todoListContract = useTodoList();
@@ -23,7 +24,7 @@ const GetTasks: FunctionComponent<{}> = () => {
   };
 
   const getTask = async () => {
-    const temp = [];
+    const temp :Task[]= [];
     if (myTaskCount > 0) {
       for (let i = 0; i < myTaskCount; i++) {
         const task = await todoListContract?.getTask(i);
@@ -32,7 +33,7 @@ const GetTasks: FunctionComponent<{}> = () => {
           content: task[1],
           completed: task[2],
           startTime: parseInt(task[3]) * 1000,
-          enddTIme: parseInt(task[4]) * 1000,
+          endTime: parseInt(task[4]) * 1000,
         });
       }
     }
