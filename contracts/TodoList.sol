@@ -94,13 +94,6 @@ contract TodoList {
         emit Toggling(task.id, task.content, task.completed);
         task.completed = !task.completed;
         emit Toggled(task.id, task.content, task.completed);
-
-        /*if (taskExists(_id)) {
-            Task storage task = tasks[_id];
-            emit Toggling(task.id, task.content, task.completed);
-            task.completed = !task.completed;
-            emit Toggled(task.id, task.content, task.completed);
-        }*/
     }
 
 
