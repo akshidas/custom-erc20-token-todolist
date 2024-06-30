@@ -9,17 +9,17 @@ import { useTodoList } from "store/todo-contract-context";
 import { useTodoToken } from "store/todo-token-contract-context";
 
 const AddTask: FunctionComponent = () => {
-    const methods = useForm<Task>({
+    const methods = useForm<NewTask>({
         defaultValues: {
             task: "",
-            endTime: "",
+                endTime: "",
         },
     });
 
     const { handleSubmit, register, setValue } = methods;
     const todoList = useTodoList();
     const todoToken = useTodoToken();
-    const onSubmit = async (inputData: Task) => {
+    const onSubmit = async (inputData: NewTask) => {
         try {
             const tokenApprove = await todoToken?.approve(TODO_CONTRACT_ADDRESS, 10);
             await tokenApprove.wait();

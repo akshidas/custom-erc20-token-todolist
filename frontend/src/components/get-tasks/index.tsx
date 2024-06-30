@@ -2,14 +2,6 @@ import { Box, Button, Checkbox, Stack, Typography } from "@mui/material";
 import { FunctionComponent, useEffect, useState } from "react";
 import { useTodoList } from "store/todo-contract-context";
 
-type Task = {
-  id: number;
-  content: string;
-  completed: boolean;
-  startTime: number;
-  endTime: number;
-};
-
 const GetTasks: FunctionComponent<{}> = () => {
   const [myTaskCount, setMyTaskCount] = useState(0);
   const todoListContract = useTodoList();

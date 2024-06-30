@@ -1,4 +1,4 @@
-type Task = {
+type NewTask = {
     task: string;
-    endTime: number| string;
+    endTime: number | string;
 };
