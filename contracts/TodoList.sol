@@ -100,19 +100,20 @@ contract TodoList {
         return _taskCount;
     }
 
-    function getTaskOfUser() public view returns(uint[] memory){
+    function getTaskOfUser() public view returns(Task[] memory){
         uint userId = getUserIdFromAddress();
         uint taskLength = getTaskLenghtOfUser();
-        uint[] memory taskIds = new uint[](taskLength);
+        Task[] memory taskIds = new Task[](taskLength);
         uint _taskCount = 0;
         uint index = 1;
         while(_taskCount  < taskLength){
             Task memory task = tasks[index];
+            index++;
+
             if(task.user_id == userId) {
-                taskIds[_taskCount] = index;
+                taskIds[_taskCount] = task;
                 _taskCount +=1;
             }
-            index++;
         }
         return taskIds;
     }

@@ -85,8 +85,9 @@ contract("TodoList", async function([primary]) {
 
     it("Task Id array", async function() {
         const todo = await TodoList.deployed();
-        const token = await Token.deployed();
-        const taskIds = await todo.getTaskOfUser();
-        console.log(taskIds);
+        const tasks = await todo.getTaskOfUser();
+        tasks.forEach((element) => {
+            console.log(element);
+        });
     });
 });
