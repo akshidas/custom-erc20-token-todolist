@@ -10,7 +10,7 @@ contract TodoList is ITodoList {
     uint[] private availableTaskIds;
     mapping(uint => Task) public tasks;
     mapping(address => Task[]) private users;
-
+ 
     IERC20 private token;
     uint private constant AMOUNT_FOR_NEW_USER = 100;
     uint private constant AMOUNT_FOR_NEW_TASK = 10;
