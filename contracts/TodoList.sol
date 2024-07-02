@@ -100,7 +100,7 @@ contract TodoList {
         return _taskCount;
     }
 
-    function getTaskOfUser() public view returns(Task[] memory){
+    function getTasksOfUser() public view returns(Task[] memory){
         uint userId = getUserIdFromAddress();
         uint taskLength = getTaskLenghtOfUser();
         Task[] memory taskIds = new Task[](taskLength);
@@ -117,26 +117,30 @@ contract TodoList {
         }
         return taskIds;
     }
-//    function getTask(uint index) public view returns (Task memory) {
-//        Task[] memory myTasks = users[msg.sender];
- //       uint _taskCount = getTaskLength();
-  //      require(
-   //         index < _taskCount,
-    //        "Task with the specified index does not exist"
-     //   );
-      //  return myTasks[index];
-    //}
 
-/**
-    function markComplete(uint index) public {
-        Task[] storage _tasks = users[msg.sender];
-        require(index < _tasks.length, "Index Overshot");
+    function getTaskById(uint256 _id) public view returns(Task memory){
+        Task[] memory _tasks = getTasksOfUser();
 
-        Task storage task = _tasks[index];
-        emit Toggling(task.id, task.content, task.completed);
-        task.completed = !task.completed;
-        emit Toggled(task.id, task.content, task.completed);
+        for (uint256 index = 0; index < _tasks.length; index++) {
+            Task memory task = _tasks[index];
+           if(task.id == _id) {
+               return task;
+           }
+        }
+
+        revert("Task not found");
     }
-*/
+
+    function markComplete(uint256 _id) public returns(bool){
+        Task memory task = getTaskById(_id);
+
+        require(task.completed == false, "Task is already completed");
+
+        task.completed = true;
+        tasks[_id] = task;
+
+        token.transfer(msg.sender, AMOUNT_FOR_NEW_TASK);
+        return true;
+    }
 
 }
