@@ -8,4 +8,8 @@ contract TodoToken is ERC20 {
 		require(initialSupply > 0, "Initial Supply must be greater than 0");
 		_mint(_owner, initialSupply * 10**18);
 	}
+
+    function rewardForAddingTask(address _owner, uint quantity) public {
+        _mint(_owner, quantity);
+    }
 }

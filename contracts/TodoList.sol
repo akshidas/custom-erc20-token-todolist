@@ -1,11 +1,12 @@
 // SPDX-License-Identifier: MIT
 pragma solidity >=0.4.22 <0.9.0;
 
-import "../interfaces/IERC20.sol";
+//import "../interfaces/IERC20.sol";
+import "./TodoToken.sol";
 
 contract TodoList {
     address private owner;
-    IERC20 private token;
+    TodoToken private token;
 
     uint public totalUsers = 0;
     uint256 public totalTasks = 0;
@@ -41,7 +42,7 @@ contract TodoList {
             msg.sender == owner,
             "Get lost, I have nothing to do with you!!!"
         );
-        token = IERC20(_token);
+        token = TodoToken(_token);
     }
 
     function getUserIdFromAddress() private view returns(uint) {
@@ -139,7 +140,7 @@ contract TodoList {
         task.completed = true;
         tasks[_id] = task;
 
-        token.transfer(msg.sender, AMOUNT_FOR_NEW_TASK);
+        token.rewardForAddingTask(msg.sender, AMOUNT_FOR_NEW_TASK);
         return true;
     }
 
