@@ -5,17 +5,21 @@ import "../interfaces/IERC20.sol";
 
 contract TodoList {
     address private owner;
-    uint public taskCount = 0;
-    uint[] private availableTaskIds;
-    mapping(uint => Task) public tasks;
-    mapping(address => Task[]) private users;
- 
     IERC20 private token;
+
+    uint public totalUsers = 0;
+    uint256 public totalTasks = 0;
+
+    mapping(address => uint) private users;
+    mapping(uint256 => Task) private tasks;
+ 
     uint private constant AMOUNT_FOR_NEW_USER = 100;
     uint private constant AMOUNT_FOR_NEW_TASK = 10;
 
+
     struct Task {
         uint id;
+        uint user_id;
         string content;
         bool completed;
         uint256 startTime;
@@ -25,7 +29,6 @@ contract TodoList {
     event TaskAdded(string message);
     event Toggling(uint id, string content, bool completed);
     event Toggled(uint id, string content, bool completed);
-    event Removed(uint id, string message);
     event TokenTransferred(uint amount, string message, address user);
     event UserAdded(address userAddress, string message);
 
@@ -41,28 +44,25 @@ contract TodoList {
         token = IERC20(_token);
     }
 
-    function getCurrentTokenHolding() public view returns (uint256) {
-        return token.balanceOf(address(this));
+    function getUserIdFromAddress() private view returns(uint) {
+        return users[msg.sender];
     }
 
     function isUserConnected() public view returns (bool) {
-        Task[] memory myTasks = users[msg.sender];
-        if(myTasks.length > 0) {
-            return true;
-        }
-        return false;
+        return getUserIdFromAddress() > 0;
     } 
 
     function connectUser() public returns (bool) {
-        users[msg.sender];
+
+        require(!isUserConnected(), "User Already connected");
+        totalUsers+= 1;
+
+        users[msg.sender] = totalUsers;
+
         emit UserAdded(msg.sender, "User Added");
         token.transfer(msg.sender, AMOUNT_FOR_NEW_USER);
         emit TokenTransferred(AMOUNT_FOR_NEW_USER, "TT transfered", msg.sender);
         return true;
-    }
-
-    function getTaskLength() public view returns (uint) {
-        return users[msg.sender].length;
     }
 
     function addTask(string memory _content, uint256 endTime) public {
@@ -73,37 +73,74 @@ contract TodoList {
         );
         require(status == true, "Failed to deposit Tokens");
 
-        uint myTasks = getTaskLength();
+        totalTasks += 1;
         Task memory task = Task(
-            myTasks + 1,
+            totalTasks,
+            getUserIdFromAddress(),
             _content,
             false,
             block.timestamp,
+
             endTime
         );
-        users[msg.sender].push(task);
+
+        tasks[totalTasks] = task;
         emit TaskAdded("A New Task has been added");
     }
 
-    function getTask(uint index) public view returns (Task memory) {
-        Task[] memory myTasks = users[msg.sender];
-        uint _taskCount = getTaskLength();
-        require(
-            index < _taskCount,
-            "Task with the specified index does not exist"
-        );
-        return myTasks[index];
+    function getTaskLenghtOfUser() public view returns(uint) {
+        uint userId = getUserIdFromAddress();
+        uint _taskCount = 0;
+        for (uint256 i = 1; i <= totalTasks; i++) {
+            Task memory task = tasks[i];
+            if(task.user_id == userId) {
+                _taskCount +=1;
+            }
+        }
+        return _taskCount;
     }
 
-    function markComplete(uint index) public {
-        Task[] storage _tasks = users[msg.sender];
-        require(index < _tasks.length, "Index Overshot");
+    function getTasksOfUser() public view returns(Task[] memory){
+        uint userId = getUserIdFromAddress();
+        uint taskLength = getTaskLenghtOfUser();
+        Task[] memory taskIds = new Task[](taskLength);
+        uint _taskCount = 0;
+        uint index = 1;
+        while(_taskCount  < taskLength){
+            Task memory task = tasks[index];
+            index++;
 
-        Task storage task = _tasks[index];
-        emit Toggling(task.id, task.content, task.completed);
-        task.completed = !task.completed;
-        emit Toggled(task.id, task.content, task.completed);
+            if(task.user_id == userId) {
+                taskIds[_taskCount] = task;
+                _taskCount +=1;
+            }
+        }
+        return taskIds;
     }
 
+    function getTaskById(uint256 _id) public view returns(Task memory){
+        Task[] memory _tasks = getTasksOfUser();
+
+        for (uint256 index = 0; index < _tasks.length; index++) {
+            Task memory task = _tasks[index];
+           if(task.id == _id) {
+               return task;
+           }
+        }
+
+        revert("Task not found");
+    }
+
+    function markComplete(uint256 _id) public returns(bool){
+        Task memory task = getTaskById(_id);
+
+        require(task.completed == false, "Task is already completed");
+
+        task.completed = true;
+        tasks[_id] = task;
+
+        token.transfer(msg.sender, AMOUNT_FOR_NEW_TASK);
+        return true;
+    }
 
 }
