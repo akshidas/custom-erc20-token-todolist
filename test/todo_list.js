@@ -7,12 +7,22 @@ const Token = artifacts.require("TodoToken");
  * See docs: https://www.trufflesuite.com/docs/truffle/testing/writing-tests-in-javascript
  */
 contract("TodoList", async function ([primary]) {
+  const isTotalSupply = (amount = 0) =>
+    async function () {
+      const token = await Token.deployed();
+      const totalSupply = await token.totalSupply();
+      assert.strictEqual(
+        totalSupply.toString(),
+        amount,
+        "Total Supply does not match",
+      );
+    };
+
   function addTask(len = "1") {
     return async function () {
       const todoList = await TodoList.deployed();
       const todo = await TodoList.deployed();
       const token = await Token.deployed();
-
       await token.approve(todo.address, 10);
       var date = new Date("07/14/2024 16:00:00"); // some mock date
 
@@ -94,6 +104,8 @@ contract("TodoList", async function ([primary]) {
     assert.strictEqual(parseInt(task.id), 1, "Id do not match");
   });
 
+  it("Total supply matches", isTotalSupply("1000000000000000000000000"));
+
   it("Task marked completed", async function () {
     const ID = 1;
     const todo = await TodoList.deployed();
@@ -104,4 +116,5 @@ contract("TodoList", async function ([primary]) {
   });
 
   it("User have 80 tokens in their wallet", isBalance("80"));
+  it("Total supply matches", isTotalSupply("1000000000000000000000010"));
 });
