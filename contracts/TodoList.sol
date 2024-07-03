@@ -132,16 +132,79 @@ contract TodoList {
         revert("Task not found");
     }
 
+    function calculateRewardPercentage(Task memory task) private view returns (uint) {
+        uint256 totalTime = task.endTime - task.startTime;
+        uint256 elapsedTime = block.timestamp - task.startTime;
+
+        return (elapsedTime / totalTime) * 100;
+    }
+
+    function getRewardRate(Task memory task) private view returns (uint) {
+        uint rewardPercentage = calculateRewardPercentage(task);
+
+        if(rewardPercentage <= 10) {
+           return 15; 
+        }
+
+        if(rewardPercentage <= 20) {
+            return 14;
+        }
+
+        if(rewardPercentage <= 30) {
+            return 13;
+        }
+
+        if(rewardPercentage <= 40) {
+            return 12;
+        }
+
+        if(rewardPercentage < 50) {
+            return 11;
+        }
+
+
+        if(rewardPercentage == 50) {
+            return 10;
+        }
+
+        if(rewardPercentage <= 60) {
+            return 9;
+        }   
+
+
+        if(rewardPercentage <= 70) {
+            return 7;
+        }   
+
+
+        if(rewardPercentage <= 80) {
+            return 5;
+        }   
+        
+
+        if(rewardPercentage <= 90) {
+            return 3;
+        }   
+
+        if(rewardPercentage <= 100) {
+            return 1;
+        }   
+
+        return 0;
+        
+    }
+
     function markComplete(uint256 _id) public returns(bool){
         Task memory task = getTaskById(_id);
-
         require(task.completed == false, "Task is already completed");
 
         task.completed = true;
         tasks[_id] = task;
 
+        uint rewardAmount = getRewardRate(task);
 
-        token.rewardForAddingTask(msg.sender, AMOUNT_FOR_NEW_TASK);
+
+        token.rewardForAddingTask(msg.sender, rewardAmount);
         return true;
     }
 
