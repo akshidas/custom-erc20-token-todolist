@@ -140,6 +140,7 @@ contract TodoList {
         task.completed = true;
         tasks[_id] = task;
 
+
         token.rewardForAddingTask(msg.sender, AMOUNT_FOR_NEW_TASK);
         return true;
     }
