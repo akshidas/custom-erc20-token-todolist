@@ -3,7 +3,6 @@ import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import AddTask from "components/add-task";
 import ConnectUser from "components/connect-user";
-import GetAddress from "components/get-address";
 import GetTaskLength from "components/get-task-length";
 import GetTasks from "components/get-tasks";
 import TodoProvider from "store/todo-contract-context";
@@ -18,10 +17,9 @@ const App = () => {
                     <Container>
                         <Card>
                             <Stack>
-                                <GetAddress />
                                 <ConnectUser />
                                 <GetTaskLength />
-                                <AddTask />
+                                <AddTask/>
                                 <GetTasks />
                             </Stack>
                         </Card>

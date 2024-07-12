@@ -6,7 +6,7 @@ const GetTasks: FunctionComponent<{}> = () => {
   const [myTaskCount, setMyTaskCount] = useState(0);
   const todoListContract = useTodoList();
   const [tasks, setTasks] = useState<Task[]>([]);
-  const getTaskLenght = async () => {
+  const getTaskLength = async () => {
     try {
       const status = await todoListContract?.getTaskLength();
       setMyTaskCount(parseInt(status));
@@ -46,7 +46,7 @@ const GetTasks: FunctionComponent<{}> = () => {
           </Stack>
         );
       })}
-      <Button onClick={getTaskLenght}>get tasks</Button>
+      <Button onClick={getTaskLength}>get tasks</Button>
     </Box>
   );
 };

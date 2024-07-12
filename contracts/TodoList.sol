@@ -207,5 +207,4 @@ contract TodoList {
         token.rewardForAddingTask(msg.sender, rewardAmount);
         return true;
     }
-
 }

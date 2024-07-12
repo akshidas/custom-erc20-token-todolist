@@ -12,6 +12,7 @@ const GetAddress = () => {
             setAddress(address);
         }
     };
+
     return (
         <div>
             <Button onClick={viewAddress}>view address</Button>
