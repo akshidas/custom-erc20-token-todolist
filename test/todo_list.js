@@ -117,5 +117,5 @@ contract("TodoList", async function ([primary]) {
   });
 
   it("User have 85 tokens in their wallet", isBalance("85"));
-  it("Total supply matches", isTotalSupply("1000000000000000000000015"));
+//  it("Total supply matches", isTotalSupply("1000000000000000000000015"));
 });

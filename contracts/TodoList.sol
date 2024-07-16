@@ -203,6 +203,7 @@ contract TodoList {
 
         uint rewardAmount = getRewardRate(task);
 
+        
 
         token.rewardForAddingTask(msg.sender, rewardAmount);
         return true;
