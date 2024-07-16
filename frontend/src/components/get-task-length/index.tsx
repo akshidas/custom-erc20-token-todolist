@@ -6,7 +6,7 @@ const GetTaskLength: FunctionComponent = () => {
     const { getTaskLength, taskLength } = useGetTaskLength();
 
     return (
-        <Box>
+        <Box >
             <Button onClick={getTaskLength}>get Length: {taskLength}</Button>
         </Box>
     );
